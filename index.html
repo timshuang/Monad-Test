@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiro的monad计划</title>
+    <style>
+        body {
+            background-color: #b3e0ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 80%;
+            height: 50%;
+            border: 2px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .tag {
+            width: 150px;
+            height: 40px;
+            margin: 10px;
+            background-color: #ffcc66;
+            text-align: left;
+            padding-left: 10px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        .tag:hover {
+            background-color: #ff9933;
+        }
+        .big-tag {
+            width: 200px;
+            height: 60px;
+            margin: 20px;
+            background-color: #ffcc66;
+            text-align: center;
+            line-height: 60px;
+            font-size: 20px;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .big-tag:hover {
+            background-color: #ff9933;
+        }
+        .bottom-tag {
+            width: 100px;
+            height: 40px;
+            background-color: #ffcc66;
+            text-align: center;
+            line-height: 40px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .bottom-tag:hover {
+            background-color: #ff9933;
+        }
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            margin-left: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .checkbox.checked {
+            background-color: green;
+        }
+        .checkbox.checked::after {
+            content: "✔";
+            color: white;
+            font-size: 16px;
+        }
+        .counter {
+            font-size: 14px;
+            margin-left: 5px;
+        }
+        .number {
+            width: 30px;
+            font-weight: bold;
+        }
+        .remark-container {
+            width: 80%;
+            padding: 20px;
+            margin-top: 20px;
+            background-color: #f0f8ff;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            text-align: left;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="big-tag" onclick="window.open('https://testnet.monad.xyz', '_blank')">
+        Monad测试网
+    </div>
+
+    <div class="container" id="tag-container">
+    </div>
+
+    <div class="bottom-tag" onclick="window.open('https://x.com/Darkerlllhiro', '_blank')">
+        hiro推特
+    </div>
+
+    <div class="remark-container">
+        <strong>备注：</strong>
+        <p>这是关于Monad测试网的任务内容，或许不全面有补充的私我推特。介绍：第一，每次打开该任务网站，所有任务列表都会随机排列，产生随机性，避免相似交互被女巫（大家都想暴富，不想大家伙被女巫）。第二，每次点击对应内容交互后都会打勾记录，避免忘记某项任务（我自己记性不好经常忘）。</p>
+    </div>
+
+    <script>
+        const tags = [
+            { name: "Monad域名", url: "https://app.nad.domains/" },
+            { name: "MON质押", url: "https://stake.apr.io/" },
+            { name: "Swap交易", url: "https://monad.ambient.finance/" },
+            { name: "Fantasy卡牌", url: "https://www.instagram.com" },
+            { name: "kuru合约交易发币", url: "https://www.kuru.io/markets" },
+            { name: "Uni跨链", url: "https://app.uniswap.org/swap" },
+            { name: "Curvance借贷", url: "https://app.curvance.com/" },
+            { name: "Owlto部署合约", url: "https://owlto.finance/deploy/" },
+            { name: "Meme交易", url: "https://testnet.nad.fun/" },
+            { name: "Nostra借贷", url: "https://monad.nostra.finance/" },
+            { name: "acurast手机挖矿", url: "https://acurast.com/processor/" },
+            { name: "Bebop刷交易", url: "https://bebop.xyz/trade?network=monad&sell=MON&buy=WMON" },
+            { name: "chogstars mint NFT", url: "https://testnet.lilchogstars.com/" },
+            { name: "Me的NFT", url: "https://magiceden.io/launchpad/monad-testnet/emmy_on_monad" },
+            { name: "morkie的NFT", url: "https://morkie.xyz/monad" },
+            { name: "aicraft投票", url: "https://aicraft.fun/projects/fizen" },
+            { name: "talentum任务平台", url: "https://monad.talentum.id/projects" },
+            { name: "Alchemy的NFT", url: "https://magiceden.io/mint-terminal/monad-testnet/0x436ee7219bb099f71c9db9c7de8862a9bde891ae" },
+            { name: "orbiter跨链", url: "https://testnet.orbiter.finance/en?src_chain=11155111&tgt_chain=10143&src_token=ETH" },
+            { name: "accountable游戏", url: "https://game.accountable.capital/" }
+        ];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function handleTagClick(tagElement, checkbox, counterElement, tagName) {
+            if (checkbox.classList.contains('checked')) {
+                return;
+            }
+            checkbox.classList.add('checked');
+            const currentCount = parseInt(counterElement.textContent);
+            counterElement.textContent = currentCount + 1;
+            window.open(tagName.url, '_blank');
+        }
+
+        function generateTags() {
+            const container = document.getElementById('tag-container');
+            shuffleArray(tags);
+
+            tags.forEach((tag, index) => {
+                const tagElement = document.createElement('div');
+                tagElement.classList.add('tag');
+
+                const tagNumber = document.createElement('span');
+                tagNumber.classList.add('number');
+                tagNumber.textContent = index + 1;
+                tagElement.appendChild(tagNumber);
+
+                const tagName = document.createElement('span');
+                tagName.textContent = tag.name;
+                tagElement.appendChild(tagName);
+
+                const checkbox = document.createElement('div');
+                checkbox.classList.add('checkbox');
+                tagElement.appendChild(checkbox);
+
+                const counterElement = document.createElement('span');
+                counterElement.classList.add('counter');
+                counterElement.textContent = "0";
+                tagElement.appendChild(counterElement);
+
+                tagElement.onclick = () => handleTagClick(tagElement, checkbox, counterElement, tag);
+
+                container.appendChild(tagElement);
+            });
+        }
+
+        window.onload = generateTags;
+    </script>
+</body>
+</html>
