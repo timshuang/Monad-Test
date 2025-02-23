@@ -14,24 +14,26 @@
             height: 100vh;
             margin: 0;
             text-align: center;
+            padding: 10px;
         }
         .container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            width: 80%;
-            height: 50%;
+            width: 90%;
+            height: auto;
             border: 2px solid #ccc;
-            padding: 20px;
+            padding: 30px;
             margin-bottom: 20px;
+            box-sizing: border-box;
         }
         .tag {
-            width: 150px;
-            height: 40px;
-            margin: 10px;
+            width: 180px;
+            height: 50px;
+            margin: 15px;
             background-color: #ffcc66;
             text-align: left;
-            padding-left: 10px;
+            padding-left: 15px;
             font-size: 16px;
             border: 2px solid #ccc;
             cursor: pointer;
@@ -43,7 +45,8 @@
             background-color: #ff9933;
         }
         .big-tag {
-            width: 200px;
+            width: 100%;
+            max-width: 350px;
             height: 60px;
             margin: 20px;
             background-color: #ffcc66;
@@ -58,7 +61,8 @@
             background-color: #ff9933;
         }
         .bottom-tag {
-            width: 100px;
+            width: 100%;
+            max-width: 250px;
             height: 40px;
             background-color: #ffcc66;
             text-align: center;
@@ -67,6 +71,7 @@
             border: 2px solid #ccc;
             cursor: pointer;
             transition: background-color 0.3s;
+            margin-top: 20px;
         }
         .bottom-tag:hover {
             background-color: #ff9933;
@@ -99,7 +104,8 @@
             font-weight: bold;
         }
         .remark-container {
-            width: 80%;
+            width: 100%;
+            max-width: 700px;
             padding: 20px;
             margin-top: 20px;
             background-color: #f0f8ff;
@@ -107,6 +113,50 @@
             border-radius: 10px;
             text-align: left;
             font-size: 16px;
+            position: relative;
+            box-sizing: border-box;
+        }
+        .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: transparent;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .tag, .big-tag, .bottom-tag {
+                width: 90%;
+                max-width: 300px;
+                margin: 10px 0;
+            }
+            .remark-container {
+                width: 90%;
+                max-width: 500px;
+                margin-top: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .big-tag {
+                font-size: 18px;
+                height: 50px;
+                max-width: 100%;
+            }
+            .bottom-tag {
+                font-size: 14px;
+                height: 35px;
+                max-width: 100%;
+            }
+            .remark-container {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -123,32 +173,35 @@
     </div>
 
     <div class="remark-container">
+        <button class="close-btn" onclick="closeRemark()">×</button>
         <strong>备注：</strong>
-        <p>这是关于Monad测试网的任务内容，或许不全面有补充的私我推特。介绍：第一，每次打开该任务网站，所有任务列表都会随机排列，产生随机性，避免相似交互被女巫。第二，每次点击对应内容交互后都会打勾记录，避免忘记某项任务（我自己记性不好经常忘）。</p>
+        <p>这是关于Monad测试网的任务内容，或许不全面有补充的私我推特。介绍：第一，每次打开该任务网站，所有任务列表都会随机排列，产生随机性，避免相似交互被女巫。第二，每次点击对应内容交互后都会打勾记录，避免忘记某项任务（我自己记性不好经常忘）持续更新中。</p>
     </div>
 
     <script>
         const tags = [
             { name: "Monad域名", url: "https://app.nad.domains/" },
-            { name: "MON质押", url: "https://stake.apr.io/" },
-            { name: "Swap交易", url: "https://monad.ambient.finance/" },
-            { name: "Fantasy卡牌", url: "https://monad.fantasy.top/login" },
-            { name: "kuru合约交易发币", url: "https://www.kuru.io/markets" },
-            { name: "Uni跨链", url: "https://app.uniswap.org/swap" },
+            { name: "Apriori质押", url: "https://stake.apr.io/" },
+            { name: "Ambient交易", url: "https://monad.ambient.finance/" },
+            { name: "Fantasy卡牌", url: "https://www.instagram.com" },
+            { name: "Kuru合约交易发币", url: "https://www.kuru.io/markets" },
+            { name: "Uni兑换", url: "https://app.uniswap.org/swap" },
             { name: "Curvance借贷", url: "https://app.curvance.com/" },
             { name: "Owlto部署合约", url: "https://owlto.finance/deploy/" },
             { name: "Meme交易", url: "https://testnet.nad.fun/" },
             { name: "Nostra借贷", url: "https://monad.nostra.finance/" },
-            { name: "acurast手机挖矿", url: "https://acurast.com/processor/" },
+            { name: "Acurast手机挖矿", url: "https://acurast.com/processor/" },
             { name: "Bebop刷交易", url: "https://bebop.xyz/trade?network=monad&sell=MON&buy=WMON" },
-            { name: "chogstars mint NFT", url: "https://testnet.lilchogstars.com/" },
+            { name: "Chogstars mint NFT", url: "https://testnet.lilchogstars.com/" },
             { name: "Me的NFT", url: "https://magiceden.io/launchpad/monad-testnet/emmy_on_monad" },
-            { name: "morkie的NFT", url: "https://morkie.xyz/monad" },
-            { name: "aicraft投票", url: "https://aicraft.fun/projects/fizen?ref=4CEISDKKKC" },
-            { name: "talentum任务平台", url: "https://monad.talentum.id/projects" },
+            { name: "Morkie的NFT", url: "https://morkie.xyz/monad" },
+            { name: "Aicraft投票", url: "https://aicraft.fun/projects/fizen" },
+            { name: "Talentum任务平台", url: "https://monad.talentum.id/projects" },
             { name: "Alchemy的NFT", url: "https://magiceden.io/mint-terminal/monad-testnet/0x436ee7219bb099f71c9db9c7de8862a9bde891ae" },
-            { name: "orbiter跨链", url: "https://testnet.orbiter.finance/en?src_chain=11155111&tgt_chain=10143&src_token=ETH" },
-            { name: "accountable游戏", url: "https://game.accountable.capital/" }
+            { name: "Orbiter跨链", url: "https://testnet.orbiter.finance/en?src_chain=11155111&tgt_chain=10143&src_token=ETH" },
+            { name: "Accountable游戏", url: "https://game.accountable.capital/" },
+            { name: "Nonad域名交易", url: "https://magiceden.io/collections/monad-testnet/0x3019bf1dfb84e5b46ca9d0eec37de08a59a41308" },
+            { name: "Nerzo的NFT", url: "https://www.nerzo.xyz/monad" },
         ];
 
         function shuffleArray(array) {
@@ -198,6 +251,11 @@
 
                 container.appendChild(tagElement);
             });
+        }
+
+        function closeRemark() {
+            const remarkContainer = document.querySelector('.remark-container');
+            remarkContainer.style.display = 'none';
         }
 
         window.onload = generateTags;
